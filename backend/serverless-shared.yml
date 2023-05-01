@@ -1,0 +1,70 @@
+custom:
+  frameworkVersion: '3'
+  app:
+    name: api-hashibis
+    domainName: ${self:custom.env.${self:custom.stage}.domainPrefix}.hashibis.site
+    sharedLayerArn: arn:aws:lambda:${self:custom.env.${self:custom.stage}.accountRegion}:${self:custom.env.${self:custom.stage}.accountId}:layer:${self:custom.app.name}-common-${self:custom.stage}:latest
+  stage: ${opt:stage, 'dev'}
+  profile: ${self:custom.app.name}-${self:custom.stage}
+  runtime: nodejs16.x
+  defaultMemory: 256
+  defaultTimeout: 29
+  useDotenv: true
+  region: us-east-1
+  versionFunctions: false
+  excludedPackageCompiler:
+    dev: []
+    toAws:
+      - /opt/nodejs/*
+  esBuildWatcher:
+    dev:
+      - './../layers/**/*.ts'
+    toAws: []
+  watchFiles:
+    dev: '**/*.ts'
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: linked
+    keepNames: true
+    keepOutputDirectory: false
+    exclude: ${self:custom.excludedPackageCompiler.${self:custom.stage}, self:custom.excludedPackageCompiler.toAws}
+    watch:
+      pattern:
+        - ${self:custom.esBuildWatcher.${self:custom.stage}, self:custom.esBuildWatcher.toAws}
+  serverless-offline:
+    noAuth: true
+  env:
+    dev:
+      accountRegion: us-east-1
+      accountId: 434817990501
+      domainPrefix: api.
+      authorizerId:
+        Fn::ImportValue: ${self:custom.app.name}-authorizer-id-${self:custom.stage}
+    prod:
+      accountRegion: us-east-1
+      accountId: 434817990501
+      domainPrefix: api.
+      authorizerId:
+        Fn::ImportValue: ${self:custom.app.name}-authorizer-id-${self:custom.stage}
+# PUGLINGS TO CONSIDERED
+#  s3:   # https://www.serverless.com/plugins/serverless-s3-local
+#    host: localhost
+#    directory: ./../localBucket
+#    port: 4569
+#  serverless-offline-sns: # https://www.serverless.com/plugins/serverless-offline-sns
+#    port: 4002
+#    debug: true
+# subscriptions:
+#   - topic:
+#       topicName: received-document
+#       rawMessageDelivery: "true"
+#     queue: http://localhost:9324/000000000000/received-document
+# serverless-offline-sqs:  # https://www.npmjs.com/package/serverless-offline-sqs
+#   autoCreate: true # create queue if not exists
+#   apiVersion: "2012-11-05"
+#   endpoint: http://localhost:9324
+#   region: us-east-1
+#   accessKeyId: root
+#   secretAccessKey: root
+#   skipCacheInvalidation: false

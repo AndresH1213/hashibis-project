@@ -1,0 +1,95 @@
+service: ${self:custom.app.name}-order
+
+frameworkVersion: ${self:custom.frameworkVersion}
+
+custom: ${file(../serverless-shared.yml):custom}
+
+provider:
+  name: aws
+  region: ${self:custom.region}
+  profile: ${self:custom.profile}
+  stage: ${self:custom.stage}
+  runtime: ${self:custom.runtime}
+  versionFunctions: ${self:custom.versionFunctions}
+  httpApi:
+    id:
+      Fn::ImportValue: ${self:custom.app.name}-http-api-id-${self:custom.stage}
+  iam:
+    role:
+      Fn::ImportValue: ${self:custom.app.name}-lambda-role-arn-${self:custom.stage}
+  memorySize: ${self:custom.defaultMemory}
+  timeout: ${self:custom.defaultTimeout}
+  layers:
+    - ${self:custom.app.sharedLayerArn}
+    - { Ref: OrderLambdaLayer }
+  environment:
+    ENV: ${self:custom.stage}
+    REGION: ${self:custom.region}
+    ORDER_TABLE_NAME:
+      Fn::ImportValue: ${self:custom.app.name}-order-table-name-${self:custom.stage}
+package:
+  individually: true
+  patterns:
+    - '!**/tsconfig.json'
+    - '!**/jest.config.js'
+    - '!**/package.json'
+    - '!**/package-lock.json'
+    - '!**/__tests__/**'
+    - '!**/__mocks__/**'
+    - '!**/*.d.ts'
+    - '!**/node_modules'
+
+layers:
+  order:
+    path: dist/layer
+    name: ${self:custom.app.name}-order-${self:custom.stage}
+    retain: false
+    package:
+      patterns:
+        - '!./__tests__/**'
+        - '!./package.json'
+        - '!./package-lock.json'
+
+functions:
+  create:
+    handler: src/create.handler
+    name: ${self:custom.app.name}-create-order-${self:custom.stage}
+    package:
+      patterns:
+        - './src/create'
+        - ${self:custom.watchFiles.${self:custom.stage}, "!**/*.ts"}
+    events:
+      - httpApi:
+          path: /order
+          method: post
+          authorizer:
+            name: ${self:custom.app.name}-authorizer-${self:custom.stage}
+            type: jwt
+            id: ${self:custom.env.${self:custom.stage}.authorizerId}
+  get-all:
+    handler: src/get-all.handler
+    name: ${self:custom.app.name}-get-all-orders-${self:custom.stage}
+    package:
+      patterns:
+        - './src/get-all'
+        - ${self:custom.watchFiles.${self:custom.stage}, "!**/*.ts"}
+    events:
+      - httpApi:
+          path: /orders
+          method: get
+  get-by-id:
+    handler: src/get-by-id.handler
+    name: ${self:custom.app.name}-get-by-id-order-${self:custom.stage}
+    package:
+      patterns:
+        - './src/get-by-id'
+        - ${self:custom.watchFiles.${self:custom.stage}, "!**/*.ts"}
+    events:
+      - httpApi:
+          path: /order/{id}
+          method: get
+
+plugins:
+  - serverless-latest-layer-version
+  - serverless-esbuild
+  - serverless-offline

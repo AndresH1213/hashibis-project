@@ -1,0 +1,25 @@
+get:
+  summary: Get an order by id.
+  description: Endpoint to get an order by id
+  operationId: getOrder
+  tags:
+    - Order
+  parameters:
+    - name: id
+      in: path
+      description: order id
+      schema:
+        type: string
+      required: true
+
+  responses:
+    '200':
+      $ref: '../shared/responses.yml#/GetOrderSuccess'
+    '400':
+      $ref: '../shared/responses.yml#/ValidationError'
+    '404':
+      $ref: '../shared/responses.yml#/NotFoundError'
+    '500':
+      $ref: '../shared/responses.yml#/InternalServerError'
+  security:
+    - auth: []

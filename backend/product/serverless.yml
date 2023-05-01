@@ -1,0 +1,126 @@
+service: ${self:custom.app.name}-product
+
+frameworkVersion: ${self:custom.frameworkVersion}
+
+custom: ${file(../serverless-shared.yml):custom}
+
+provider:
+  name: aws
+  region: ${self:custom.region}
+  profile: ${self:custom.profile}
+  stage: ${self:custom.stage}
+  runtime: ${self:custom.runtime}
+  versionFunctions: ${self:custom.versionFunctions}
+  httpApi:
+    id:
+      Fn::ImportValue: ${self:custom.app.name}-http-api-id-${self:custom.stage}
+  iam:
+    role:
+      Fn::ImportValue: ${self:custom.app.name}-lambda-role-arn-${self:custom.stage}
+  memorySize: ${self:custom.defaultMemory}
+  timeout: ${self:custom.defaultTimeout}
+  layers:
+    - ${self:custom.app.sharedLayerArn}
+    - { Ref: ProductLambdaLayer }
+  environment:
+    ENV: ${self:custom.stage}
+    REGION: ${self:custom.region}
+    PRODUCT_TABLE_NAME:
+      Fn::ImportValue: ${self:custom.app.name}-product-table-name-${self:custom.stage}
+
+package:
+  individually: true
+  patterns:
+    - '!**/tsconfig.json'
+    - '!**/jest.config.js'
+    - '!**/package.json'
+    - '!**/package-lock.json'
+    - '!**/__tests__/**'
+    - '!**/__mocks__/**'
+    - '!**/*.d.ts'
+    - '!**/node_modules'
+
+layers:
+  product:
+    path: dist/layer
+    name: ${self:custom.app.name}-product-${self:custom.stage}
+    retain: false
+    package:
+      patterns:
+        - '!./__tests__/**'
+        - '!./package.json'
+        - '!./package-lock.json'
+
+functions:
+  createProduct:
+    handler: src/create-product.handler
+    name: ${self:custom.app.name}-create-product-${self:custom.stage}
+    package:
+      patterns:
+        - './src/create-product'
+        - ${self:custom.watchFiles.${self:custom.stage}, "!**/*.ts"}
+    events:
+      - httpApi:
+          path: /product
+          method: post
+          authorizer:
+            name: ${self:custom.app.name}-authorizer-${self:custom.stage}
+            type: jwt
+            id: ${self:custom.env.${self:custom.stage}.authorizerId}
+  updateProduct:
+    handler: src/update-product.handler
+    name: ${self:custom.app.name}-update-product-${self:custom.stage}
+    package:
+      patterns:
+        - './src/update-product'
+        - ${self:custom.watchFiles.${self:custom.stage}, "!**/*.ts"}
+    events:
+      - httpApi:
+          path: /product/{id}
+          method: patch
+          authorizer:
+            name: ${self:custom.app.name}-authorizer-${self:custom.stage}
+            type: jwt
+            id: ${self:custom.env.${self:custom.stage}.authorizerId}
+  deleteProduct:
+    handler: src/delete-product.handler
+    name: ${self:custom.app.name}-delete-product-${self:custom.stage}
+    package:
+      patterns:
+        - './src/delete-product'
+        - ${self:custom.watchFiles.${self:custom.stage}, "!**/*.ts"}
+    events:
+      - httpApi:
+          path: /product/{id}
+          method: delete
+          authorizer:
+            name: ${self:custom.app.name}-authorizer-${self:custom.stage}
+            type: jwt
+            id: ${self:custom.env.${self:custom.stage}.authorizerId}
+  getProductById:
+    handler: src/get-product.handler
+    name: ${self:custom.app.name}-get-product-${self:custom.stage}
+    package:
+      patterns:
+        - './src/get-product'
+        - ${self:custom.watchFiles.${self:custom.stage}, "!**/*.ts"}
+    events:
+      - httpApi:
+          path: /product/{id}
+          method: get
+  getAllProducts:
+    handler: src/get-products.handler
+    name: ${self:custom.app.name}-get-products-${self:custom.stage}
+    package:
+      patterns:
+        - './src/get-products'
+        - ${self:custom.watchFiles.${self:custom.stage}, "!**/*.ts"}
+    events:
+      - httpApi:
+          path: /products
+          method: get
+
+plugins:
+  - serverless-latest-layer-version
+  - serverless-esbuild
+  - serverless-offline

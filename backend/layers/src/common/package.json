@@ -1,0 +1,27 @@
+{
+  "name": "common",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "author": "Andres Hernandez",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-cloudwatch": "^3.303.0",
+    "@aws-sdk/client-dynamodb": "^3.303.0",
+    "@aws-sdk/client-lambda": "^3.303.0",
+    "@aws-sdk/client-sns": "^3.303.0",
+    "jsonschema": "^1.4.1",
+    "moment-timezone": "^0.5.42",
+    "ulid": "^2.3.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/moment-timezone": "^0.5.30",
+    "@types/uuid": "^8.3.4",
+    "typescript": "^4.8.4"
+  }
+}

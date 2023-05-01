@@ -1,0 +1,99 @@
+service: ${self:custom.app.name}-personal-information
+
+frameworkVersion: ${self:custom.frameworkVersion}
+
+custom: ${file(../serverless-shared.yml):custom}
+
+provider:
+  name: aws
+  region: ${self:custom.region}
+  profile: ${self:custom.profile}
+  stage: ${self:custom.stage}
+  runtime: ${self:custom.runtime}
+  versionFunctions: ${self:custom.versionFunctions}
+  httpApi:
+    id:
+      Fn::ImportValue: ${self:custom.app.name}-http-api-id-${self:custom.stage}
+  iam:
+    role:
+      Fn::ImportValue: ${self:custom.app.name}-lambda-role-arn-${self:custom.stage}
+  memorySize: ${self:custom.defaultMemory}
+  timeout: ${self:custom.defaultTimeout}
+  layers:
+    - ${self:custom.app.sharedLayerArn}
+    - { Ref: PersonalInformationLambdaLayer }
+  environment:
+    ENV: ${self:custom.stage}
+    REGION: ${self:custom.region}
+    PERSONAL_INFORMATION_TABLE_NAME:
+      Fn::ImportValue: ${self:custom.app.name}-personal-information-table-name-${self:custom.stage}
+package:
+  individually: true
+  patterns:
+    - '!**/tsconfig.json'
+    - '!**/jest.config.js'
+    - '!**/package.json'
+    - '!**/package-lock.json'
+    - '!**/__tests__/**'
+    - '!**/__mocks__/**'
+    - '!**/*.d.ts'
+    - '!**/node_modules'
+
+layers:
+  personalInformation:
+    path: dist/layer
+    name: ${self:custom.app.name}-personal-information-${self:custom.stage}
+    retain: false
+    package:
+      patterns:
+        - '!./__tests__/**'
+        - '!./package.json'
+        - '!./package-lock.json'
+
+functions:
+  createPersonalInformation:
+    handler: src/create-personal-information.handler
+    name: ${self:custom.app.name}-create-personal-information-${self:custom.stage}
+    package:
+      patterns:
+        - './src/create-personal-information'
+        - ${self:custom.watchFiles.${self:custom.stage}, "!**/*.ts"}
+    events:
+      - httpApi:
+          path: /personal-information
+          method: post
+          authorizer:
+            name: ${self:custom.app.name}-authorizer-${self:custom.stage}
+            type: jwt
+            id: ${self:custom.env.${self:custom.stage}.authorizerId}
+  updatePersonalInformation:
+    handler: src/update-personal-information.handler
+    name: ${self:custom.app.name}-update-personal-information-${self:custom.stage}
+    package:
+      patterns:
+        - './src/update-personal-information'
+        - ${self:custom.watchFiles.${self:custom.stage}, "!**/*.ts"}
+    events:
+      - httpApi:
+          path: /personal-information
+          method: patch
+          authorizer:
+            name: ${self:custom.app.name}-authorizer-${self:custom.stage}
+            type: jwt
+            id: ${self:custom.env.${self:custom.stage}.authorizerId}
+  getPersonalInformation:
+    handler: src/get-personal-information.handler
+    name: ${self:custom.app.name}-get-personal-information-${self:custom.stage}
+    package:
+      patterns:
+        - './src/get-personal-information'
+        - ${self:custom.watchFiles.${self:custom.stage}, "!**/*.ts"}
+    events:
+      - httpApi:
+          path: /personal-information/{id}
+          method: get
+
+plugins:
+  - serverless-latest-layer-version
+  - serverless-esbuild
+  - serverless-offline

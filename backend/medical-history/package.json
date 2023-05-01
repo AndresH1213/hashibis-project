@@ -1,0 +1,14 @@
+{
+  "name": "items2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build:layer": "tsc -p layer/config/tsconfig.json",
+    "install": "npm install",
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {}
+}

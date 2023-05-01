@@ -1,0 +1,18 @@
+get:
+  summary: Get a all orders, limit 20.
+  description: Endpoit to get all the orders
+  operationId: getOrders
+  tags:
+    - Order
+
+  responses:
+    '200':
+      $ref: '../shared/responses.yml#/GetAllOrdersSuccess'
+    '400':
+      $ref: '../shared/responses.yml#/ValidationError'
+    '404':
+      $ref: '../shared/responses.yml#/NotFoundError'
+    '500':
+      $ref: '../shared/responses.yml#/InternalServerError'
+  security:
+    - auth: []

@@ -1,0 +1,110 @@
+service: ${self:custom.app.name}-medical-history
+
+frameworkVersion: ${self:custom.frameworkVersion}
+
+custom: ${file(../serverless-shared.yml):custom}
+
+provider:
+  name: aws
+  region: ${self:custom.region}
+  profile: ${self:custom.profile}
+  stage: ${self:custom.stage}
+  runtime: ${self:custom.runtime}
+  versionFunctions: ${self:custom.versionFunctions}
+  httpApi:
+    id:
+      Fn::ImportValue: ${self:custom.app.name}-http-api-id-${self:custom.stage}
+  iam:
+    role:
+      Fn::ImportValue: ${self:custom.app.name}-lambda-role-arn-${self:custom.stage}
+  memorySize: ${self:custom.defaultMemory}
+  timeout: ${self:custom.defaultTimeout}
+  layers:
+    - ${self:custom.app.sharedLayerArn}
+    - { Ref: MedicalHistoryLambdaLayer }
+  environment:
+    ENV: ${self:custom.stage}
+    REGION: ${self:custom.region}
+    MEDICAL_HISTORY_TABLE_NAME:
+      Fn::ImportValue: ${self:custom.app.name}-medical-history-table-name-${self:custom.stage}
+package:
+  individually: true
+  patterns:
+    - '!**/tsconfig.json'
+    - '!**/jest.config.js'
+    - '!**/package.json'
+    - '!**/package-lock.json'
+    - '!**/__tests__/**'
+    - '!**/__mocks__/**'
+    - '!**/*.d.ts'
+    - '!**/node_modules'
+
+layers:
+  medicalHistory:
+    path: dist/layer
+    name: ${self:custom.app.name}-medical-history-layer-${self:custom.stage}
+    retain: false
+    package:
+      patterns:
+        - '!./__tests__/**'
+        - '!./package.json'
+        - '!./package-lock.json'
+
+functions:
+  create:
+    handler: src/create.handler
+    name: ${self:custom.app.name}-create-medical-history-${self:custom.stage}
+    package:
+      patterns:
+        - './src/create'
+        - ${self:custom.watchFiles.${self:custom.stage}, "!**/*.ts"}
+    events:
+      - httpApi:
+          path: /medical-history
+          method: post
+          authorizer:
+            name: ${self:custom.app.name}-authorizer-${self:custom.stage}
+            type: jwt
+            id: ${self:custom.env.${self:custom.stage}.authorizerId}
+  update:
+    handler: src/update.handler
+    name: ${self:custom.app.name}-update-medical-history-${self:custom.stage}
+    package:
+      patterns:
+        - './src/update'
+        - ${self:custom.watchFiles.${self:custom.stage}, "!**/*.ts"}
+    events:
+      - httpApi:
+          path: /medical-history
+          method: patch
+          authorizer:
+            name: ${self:custom.app.name}-authorizer-${self:custom.stage}
+            type: jwt
+            id: ${self:custom.env.${self:custom.stage}.authorizerId}
+  get-main:
+    handler: src/get-main.handler
+    name: ${self:custom.app.name}-get-medical-history-${self:custom.stage}
+    package:
+      patterns:
+        - './src/get-main'
+        - ${self:custom.watchFiles.${self:custom.stage}, "!**/*.ts"}
+    events:
+      - httpApi:
+          path: /medical-history
+          method: get
+  get-by-id:
+    handler: src/get-by-id.handler
+    name: ${self:custom.app.name}-get-by-id-medical-history-${self:custom.stage}
+    package:
+      patterns:
+        - './src/get-by-id'
+        - ${self:custom.watchFiles.${self:custom.stage}, "!**/*.ts"}
+    events:
+      - httpApi:
+          path: /medical-history/{id}
+          method: get
+
+plugins:
+  - serverless-latest-layer-version
+  - serverless-esbuild
+  - serverless-offline

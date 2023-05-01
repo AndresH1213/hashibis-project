@@ -1,0 +1,25 @@
+get:
+  summary: Get an personal information by user id.
+  description: Endpoint get an personal information by user id
+  operationId: getPersonalInformation
+  tags:
+    - Personal Information
+  parameters:
+    - name: id
+      in: path
+      description: personal information id
+      schema:
+        type: string
+      required: true
+
+  responses:
+    '200':
+      $ref: '../shared/responses.yml#/GetPersonalInformationSuccess'
+    '400':
+      $ref: '../shared/responses.yml#/ValidationError'
+    '404':
+      $ref: '../shared/responses.yml#/NotFoundError'
+    '500':
+      $ref: '../shared/responses.yml#/InternalServerError'
+  security:
+    - auth: []

@@ -1,0 +1,55 @@
+get:
+  summary: Get a medical history by its userId
+  description: Endpoint to get a medical history by its userId
+  operationId: getMedicalHistory
+  tags:
+    - Medical History
+  parameters:
+    - name: id
+      in: path
+      description: user id
+      schema:
+        type: string
+      required: true
+
+  responses:
+    '200':
+      $ref: '../shared/responses.yml#/GetMedicalHistorySuccess'
+    '400':
+      $ref: '../shared/responses.yml#/ValidationError'
+    '404':
+      $ref: '../shared/responses.yml#/NotFoundError'
+    '500':
+      $ref: '../shared/responses.yml#/InternalServerError'
+
+patch:
+  summary: Update a medical history by its userId.
+  description: Endpoint to update the medical history of a user
+  operationId: updateMedicalHistory
+  tags:
+    - Medical History
+  parameters:
+    - name: id
+      in: path
+      description: User ID
+      required: true
+      schema:
+        type: string
+  requestBody:
+    description: Medical History object to be updated
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../shared/schemas.yml#/MedicalHistoryItem'
+  responses:
+    '200':
+      $ref: '../shared/responses.yml#/UpdateMedicalHistorySuccess'
+    '400':
+      $ref: '../shared/responses.yml#/ValidationError'
+    '404':
+      $ref: '../shared/responses.yml#/NotFoundError'
+    '500':
+      $ref: '../shared/responses.yml#/InternalServerError'
+  security:
+    - auth: []

@@ -1,0 +1,67 @@
+{
+  "users": {
+    "USER_ALREADY_EXISTS": {
+      "code": "HSI-0001",
+      "message": "User already exists",
+      "httpStatus": 400
+    }
+  },
+  "medicalHistory": {
+    "USER_DO_NOT_HAVE_MEDICAL_HISTORY": {
+      "code": "HSI-1002",
+      "message": "User do not have medical history",
+      "httpStatus": 404
+    },
+    "MEDICAL_HISTORY_NOT_FOUND": {
+      "code": "HSI-1003",
+      "message": "Medical history not found",
+      "httpStatus": 404
+    },
+    "MEDICAL_HISTORY_NO_DATA_TO_UPDATED": {
+      "code": "HSI-1004",
+      "message": "There is no data for update the medical history",
+      "httpStatus": 400
+    }
+  },
+  "personalInformation": {
+    "USER_DO_NOT_HAVE_PERSONAL_INFORMATION": {
+      "code": "HSI-2001",
+      "message": "User do not have personal information",
+      "httpStatus": 404
+    },
+    "PERSONAL_INFORMATION_NOT_FOUND": {
+      "code": "HSI-2002",
+      "message": "Personal Information not found",
+      "httpStatus": 404
+    }
+  },
+  "product": {
+    "PRODUCT_NOT_FOUND": {
+      "code": "HSI-3001",
+      "message": "Product not found",
+      "httpStatus": 404
+    },
+    "NO_PRODUCTS_IN_DB": {
+      "code": "HSI-3002",
+      "message": "No products in the DB",
+      "httpStatus": 404
+    },
+    "PRODUCT_NO_DATA_TO_UPDATED": {
+      "code": "HSI-3003",
+      "message": "There is no data for update the product",
+      "httpStatus": 400
+    }
+  },
+  "order": {
+    "ORDER_NOT_FOUND": {
+      "code": "HSI-4001",
+      "message": "Order not found",
+      "httpStatus": 404
+    },
+    "NO_ORDERS_IN_DB": {
+      "code": "HSI-4002",
+      "message": "No orders in the DB",
+      "httpStatus": 404
+    }
+  }
+}

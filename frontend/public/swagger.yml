@@ -1,0 +1,52 @@
+openapi: 3.0.0
+info:
+  title: 'API Hashibis Store'
+  version: 1.0.0
+  license:
+    name: MIT
+servers:
+  - url: https://api-dev.hashibis.site/v1
+    description: 'Development Server'
+  - url: https://api.hashibis.site/v1
+    description: 'Production Server'
+tags:
+  - name: 'Medical History'
+    description: 'Management medical history endpoints'
+  - name: 'Personal Information'
+    description: 'CRUD personal information endpoints'
+  - name: 'Product'
+    description: 'CRUD product endpoint only for administrator'
+  - name: 'Order'
+    description: Order service endpoints
+paths:
+  /medical-history:
+    $ref: './docs/medical-history/medical-history.yml'
+  /medical-history/{id}:
+    $ref: './docs/medical-history/medical-history.[id].yml'
+  /personal-information:
+    $ref: './docs/personal-information/personal-information.yml'
+  /personal-information/{id}:
+    $ref: './docs/personal-information/personal-information.[id].yml'
+  /product:
+    $ref: './docs/product/product.yml'
+  /products:
+    $ref: './docs/product/products.yml'
+  /product/{id}:
+    $ref: './docs/product/product.[id].yml'
+  /order:
+    $ref: './docs/order/order.yml'
+  /orders:
+    $ref: './docs/order/orders.yml'
+  /order/{id}:
+    $ref: './docs/order/order.[id].yml'
+components:
+  schemas:
+    $ref: './docs/shared/schemas.yml'
+  responses:
+    $ref: './docs/shared/responses.yml'
+  examples:
+    $ref: './docs/shared/examples.yml'
+  securitySchemes:
+    auth:
+      type: http
+      scheme: bearer

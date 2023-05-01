@@ -1,0 +1,88 @@
+post:
+  summary: Endpoint to create a new order for a customer
+  description: Customers must provide personal information and medical history, if applicable, to create an order. The endpoint will validate the information provided and return a response with the order information if the information is valid
+  operationId: createOrder
+  tags:
+    - Order
+  requestBody:
+    description: Object that represents the body required in the request create order
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            date:
+              type: string
+              format: date-time
+              description: Date and time when the order was placed
+            products:
+              type: array
+              items:
+                type: object
+                properties:
+                  productId:
+                    type: string
+                    description: Product ID
+                  price:
+                    type: number
+                    description: Price of the product at the time the order was placed
+                    minimum: 0
+                  quantity:
+                    type: number
+                    description: Quantity of the product ordered
+                    minimum: 1
+                required: ['productId', 'price', 'quantity']
+              description: List of products that were ordered
+            total:
+              type: string
+              description: Total cost of the order
+            status:
+              type: string
+              description: Current status of the order
+              enum: ['pending', 'in progress', 'delivered', 'cancelled']
+            shipping:
+              type: object
+              description: Shipping information for the order
+              properties:
+                address:
+                  type: string
+                  description: Date and time when the order was placed
+                date:
+                  type: string
+                  format: date-time
+                  description: Date when the order was shipped (if different from the order date)
+                method:
+                  type: number
+                  description: Shipping method used to deliver the order
+                  enum: ['mail', 'courier', 'in-person delivery']
+              required: ['address', 'date', 'method']
+            comments:
+              type: string
+              description: Any additional comments or instructions from the user
+          required: ['date', 'products', 'total', 'status', 'shipping']
+        examples:
+          body:
+            summary: Example of full body sent in the request
+            value:
+              date: 2023-02-08T10:30:00.000Z
+              products:
+                - productId: ABCD1234
+                  price: 10000
+                  quantity: 1
+              total: 10000
+              status: delivered
+              shipping:
+                address: 123 Avenue, 5050
+                date: 2023-03-08T10:30:00.000Z
+                method: mail
+              comments: No comments
+  responses:
+    '201':
+      $ref: '../shared/responses.yml#/OrderCreateSuccess'
+    '400':
+      $ref: '../shared/responses.yml#/ValidationError'
+    '500':
+      $ref: '../shared/responses.yml#/InternalServerError'
+  security:
+    - auth: []

@@ -1,0 +1,19 @@
+services:
+  layers:
+    path: layers
+
+  personalInformation:
+    path: personal-information
+    dependsOn: layers
+
+  medicalHistory:
+    path: medical-history
+    dependsOn: layers
+
+  product:
+    path: product
+    dependsOn: layers
+
+  order:
+    path: order
+    dependsOn: product

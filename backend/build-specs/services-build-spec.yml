@@ -1,0 +1,25 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - npm install -g npm
+      - npm install
+      - npm install ./layers/src/common
+  pre-build:
+    commands:
+      - npm run test
+  build:
+    commands:
+      - npm run compileLayers
+
+artifacts:
+  files:
+    - '**/*'
+
+reports:
+  jest_reports:
+    files:
+      - 'test-report.xml'
+    file-format: JUNITXML
+    base-directory: 'test-reports'

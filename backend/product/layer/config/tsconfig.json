@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "outDir": "../../dist/layer/nodejs",
+    "rootDir": "../",
+    "target": "es2022",
+    "declaration": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "/opt/nodejs/*": ["../layers/src/common/nodejs/*", "./layer/nodejs/*"],
+      "@/*": ["./*"]
+    }
+  },
+  "include": ["../**/*"],
+  "exclude": ["../**/__mocks__/**/*"]
+}

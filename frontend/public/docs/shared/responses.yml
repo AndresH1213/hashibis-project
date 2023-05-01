@@ -1,0 +1,197 @@
+ValidationError:
+  description: Object that represents an error response due to validation errors
+  content:
+    application/json:
+      schema:
+        type: array
+        description: Array that contains N errors generated in the system
+        items:
+          $ref: './schemas.yml#/Error'
+NotFoundError:
+  description: Object that represents an error response because the resource being accessed could not be found
+  content:
+    application/json:
+      schema:
+        type: array
+        description: Array that contains N errors generated in the system
+        items:
+          $ref: './schemas.yml#/Error'
+InternalServerError:
+  description: Object that represents an error response due to an internal error in the system
+  content:
+    application/json:
+      schema:
+        type: array
+        description: Array that contains N errors generated in the system
+        items:
+          $ref: './schemas.yml#/Error'
+CreateProductSuccess:
+  description: Object that is returned when a product is created
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          message:
+            type: string
+            description: Message of create product success
+          item:
+            $ref: './schemas.yml#/ProductItem'
+GetProductSuccess:
+  description: Object that is returned when a product is created
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          message:
+            type: string
+            description: Message of get product success
+          item:
+            $ref: './schemas.yml#/ProductItem'
+GetAllProductsSuccess:
+  description: A list of products
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          message:
+            type: string
+            description: Message for get all products success
+          items:
+            type: array
+            items:
+              $ref: './schemas.yml#/ProductItem'
+UpdateProductSuccess:
+  description: Object that is returned when a product is successfully updated
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          message:
+            type: string
+            description: Message of update product success
+          item:
+            $ref: './schemas.yml#/ProductItem'
+
+OrderCreateSuccess:
+  description: Order created successfully
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          message:
+            type: string
+            description: Message of create order success
+          item:
+            $ref: './schemas.yml#/OrderItem'
+
+GetOrderSuccess:
+  description: Object that is returned when an order is successfully retrieved
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          message:
+            type: string
+            description: Message for get order success
+          item:
+            $ref: './schemas.yml#/OrderItem'
+
+GetAllOrdersSuccess:
+  description: A list of orders
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          message:
+            type: string
+            description: Message for get all orders success
+          items:
+            type: array
+            items:
+              $ref: './schemas.yml#/OrderItem'
+
+CreateMedicalHistorySuccess:
+  description: Medical history successfully created
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          message:
+            type: string
+            description: Message indicating the success of the operation
+            example: Medical history successfully created
+          medicalHistory:
+            $ref: './schemas.yml#/MedicalHistoryItem'
+
+GetMedicalHistorySuccess:
+  description: Object that is returned when an medical history is successfully retrieved
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          message:
+            type: string
+            description: Message for get medical history success
+          item:
+            $ref: './schemas.yml#/MedicalHistoryItem'
+
+UpdateMedicalHistorySuccess:
+  description: Object that is returned when a medical history is successfully updated
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          message:
+            type: string
+            description: Message of update medical history success
+          item:
+            $ref: './schemas.yml#/MedicalHistoryItem'
+
+CreatePersonalInformationSuccess:
+  description: Personal information created successfully
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          message:
+            type: string
+            example: Personal information created successfully
+          item:
+            $ref: './schemas.yml#/PersonalInformationItem'
+
+GetPersonalInformationSuccess:
+  description: Object that is returned when a personal information is created
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          message:
+            type: string
+            description: Message of get personal information success
+          item:
+            $ref: './schemas.yml#/PersonalInformationItem'
+
+UpdatePersonalInformationSuccess:
+  description: Object that is returned when a personal information is successfully updated
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          message:
+            type: string
+            description: Message of update personal information success
+          item:
+            $ref: './schemas.yml#/PersonalInformationItem'

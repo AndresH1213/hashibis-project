@@ -1,0 +1,33 @@
+ProductBody:
+  summary: Example of a product body
+  value:
+    name: CBD Oil
+    type: extract
+    cannabinoidContent: 'CBD 25%, CBG 2%'
+    concentration: 20mg/portion
+    measureUnitConcentration: portion
+    extractionMethod: ethanol
+    origin: hybrid
+    presentation: bottle
+    price: 70
+    effects: 'Calming, pain relief, anti-inflammatory'
+    family: CBD
+    recommendedPersonalDose: 1 portion before bedtime
+    scientificResearch:
+      - 'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6140266/'
+      - 'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7023045/'
+
+PersonalInformationBody:
+  summary: Example of personal information body
+  value:
+    name: John
+    lastname: Doe
+    birthday: '1990-01-01'
+    address: 123 Main St
+    identification: '123456789'
+    identificationType: CC
+    phone: '1234567890'
+    hasMedicalHistory: true
+    cannabisExperience: 2
+    lastOrder: '2022-04-01'
+    ordersNumber: 5

@@ -1,0 +1,18 @@
+{
+  "name": "CBD Oil",
+  "type": "extract",
+  "cannabinoidContent": "CBD 25%, CBG 2%",
+  "concentration": "20mg/portion",
+  "measureUnitConcentration": "portion",
+  "extractionMethod": "ethanol",
+  "origin": "hybrid",
+  "presentation": "bottle",
+  "price": 70,
+  "effects": "Calming, pain relief, anti-inflammatory",
+  "family": "CBD",
+  "recommendedPersonalDose": "1 portion before bedtime",
+  "scientificResearch": [
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6140266/",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7023045/"
+  ]
+}
