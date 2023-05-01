@@ -6,7 +6,7 @@ Users can be authenticated and received a token to use the API through a fronten
 
 The project also includes an infrastructure as code component using CDK, allowing for easy deployment and management of the underlying AWS resources.
 
-Yoy can access the live project at https://hashibis.site
+Yoy can access the live project at http://hashibis.site
 
 ## Frontend
 
