@@ -27,6 +27,8 @@ provider:
     REGION: ${self:custom.region}
     PRODUCT_TABLE_NAME:
       Fn::ImportValue: ${self:custom.app.name}-product-table-name-${self:custom.stage}
+    BUCKET_NAME:
+      Fn::ImportValue: ${self:custom.app.name}-bucket-name-${self:custom.stage}
 
 package:
   individually: true
@@ -119,6 +121,21 @@ functions:
       - httpApi:
           path: /products
           method: get
+  uploadProductImage:
+    handler: src/upload-image.handler
+    name: ${self:custom.app.name}-upload-product-image-${self:custom.stage}
+    package:
+      patterns:
+        - './src/upload-image'
+        - ${self:custom.watchFiles.${self:custom.stage}, "!**/*.ts"}
+    events:
+      - httpApi:
+          path: /products/upload-image
+          method: get
+          authorizer:
+            name: ${self:custom.app.name}-authorizer-${self:custom.stage}
+            type: jwt
+            id: ${self:custom.env.${self:custom.stage}.authorizerId}
 
 plugins:
   - serverless-latest-layer-version

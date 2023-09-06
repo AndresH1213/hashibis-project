@@ -11,6 +11,7 @@ describe('Suite for test the lambda for personal information', function () {
   it('test the object for success response', async () => {
     const res = await handlerCreate(...getSuccessParams());
     if (!res) throw new Error('No response');
+    console.log({ res });
     const body = JSON.parse(res.body);
     expect(body.item).toEqual(
       expect.objectContaining({
@@ -18,7 +19,7 @@ describe('Suite for test the lambda for personal information', function () {
         lastname: expect.any(String),
         address: expect.any(String),
         birthday: expect.any(String),
-        cannabisExperience: expect.any(Number),
+        gender: expect.any(String),
         hasMedicalHistory: expect.any(Boolean),
         phone: expect.any(String),
         identification: expect.any(String),

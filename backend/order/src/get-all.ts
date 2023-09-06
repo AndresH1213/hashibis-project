@@ -27,7 +27,7 @@ const handler: APIGatewayProxyHandler = async (
 
     return ApiGwResponse.format(200, {
       message: 'Orders retrieved successfully',
-      items: Items.map((it: Order) => unmarshall(it)),
+      items: Items.map((it) => unmarshall(it)),
     });
   } catch (e) {
     console.log({ error: e });

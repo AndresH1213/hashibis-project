@@ -6,3 +6,7 @@ export type IProduct = FromSchema<typeof ProductSchema>;
 export interface ProductProps extends Partial<IProduct> {
   id: string;
 }
+export type getAllProps = {
+  limit: number;
+  lastEvaluatedKey?: Record<string, any>;
+};

@@ -5,65 +5,75 @@ export default class ProductSchema {
       properties: {
         name: {
           type: 'string',
-          minLength: 1,
-          description: 'Name of the product being offered for sale',
+          minLength: 4,
+          description: 'Name of the product',
         },
-        type: {
+        description: {
           type: 'string',
-          description: 'Type of the product being offered for sale',
-          enum: ['flower', 'cream', 'edible', 'topical', 'vape', 'extract'],
+          description: 'Description of the product',
         },
-        cannabinoidContent: {
+        code: {
           type: 'string',
-          description:
-            'Amount of THC, CBD, and other cannabinoids found in the product',
+          minLength: 3,
+          description: 'Code of the product',
+        },
+        category: {
+          type: 'string',
+          description: 'Category of the product',
+          enum: [
+            'Flower/Bud',
+            'Edibles',
+            'Concentrates',
+            'Topicals',
+            'Vapes',
+            'Accessories',
+            'Growing Supplies',
+            'Apparel and Merchandise',
+          ],
         },
         concentration: {
-          type: 'string',
+          type: 'number',
+          min: 0,
           description: 'Concentration of cannabinoids per serving or per ml',
         },
         measureUnitConcentration: {
           type: 'string',
-          enum: ['ml', 'portion'],
           description:
             'Unit of measure of the concentration of the product, ml or portion',
         },
-        extractionMethod: {
-          type: 'string',
-          description: 'Method of extraction of the product',
-          enum: ['CO2', 'butane', 'ethanol', 'solventless'],
+        tags: {
+          type: 'array',
+          items: {
+            type: 'string',
+          },
+          description: 'List of tags related to the product',
         },
-        origin: {
-          type: 'string',
-          description:
-            'Variety of the cannabis from which the cannabinoids from the cannabis',
-          enum: ['indica', 'sativa', 'hybrid'],
-        },
-        presentation: {
-          type: 'string',
-          description:
-            'The form in which the product is presented (e.g. bottle, tube, vaporizer).',
-          enum: ['bottle', 'tube', 'vaporizer'],
+        benefits: {
+          type: 'array',
+          items: {
+            type: 'string',
+          },
+          description: 'List of benefits related to the product',
         },
         price: {
           type: 'number',
           description: 'Price of the product',
         },
-        effects: {
-          type: 'string',
-          description:
-            'Description of the effects of the product on the body and mind',
+        images: {
+          type: 'array',
+          items: {
+            type: 'string',
+          },
+          description: 'List of url images of the products',
         },
-        family: {
-          type: 'string',
-          description:
-            'which family of cannabinoids the product belongs to (e.g. THC, CBD, CBN, CBG).',
-          enum: ['THC', 'CBD', 'CBN', 'CBG'],
-        },
-        recommendedPersonalDose: {
+        personalDosis: {
           type: 'string',
           description:
             'Allow the customer to know how much to consume per serving, helping them avoid overdose or excessive consumption.',
+        },
+        recommendation: {
+          type: 'string',
+          description: 'Recommendation to consume the product',
         },
         scientificResearch: {
           type: 'array',
@@ -73,17 +83,7 @@ export default class ProductSchema {
           description: 'List of scientific research related to the product',
         },
       },
-      required: [
-        'name',
-        'type',
-        'cannabinoidContent',
-        'origin',
-        'presentation',
-        'price',
-        'effects',
-        'family',
-        'recommendedPersonalDose',
-      ],
+      required: ['name', 'code', 'description', 'category', 'price'],
     } as const;
   }
 }

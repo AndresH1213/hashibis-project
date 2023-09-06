@@ -1,7 +1,7 @@
 import { Construct } from 'constructs';
 import * as cdk from 'aws-cdk-lib';
 import { BasicStackProps } from '../interfaces';
-import { getResourceNameWithPrefix, getGithubBranchName } from '../util';
+import { getResourceNameWithPrefix, getGithubBranchName, getSecretArn } from '../util';
 import {
   PipelineProject,
   LinuxBuildImage,
@@ -11,18 +11,12 @@ import {
 } from 'aws-cdk-lib/aws-codebuild';
 import * as logs from 'aws-cdk-lib/aws-logs';
 import { Artifact, Pipeline } from 'aws-cdk-lib/aws-codepipeline';
-import {
-  CodeBuildAction,
-  CodeStarConnectionsSourceAction,
-} from 'aws-cdk-lib/aws-codepipeline-actions';
+import { CodeBuildAction, GitHubSourceAction } from 'aws-cdk-lib/aws-codepipeline-actions';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import * as sns from 'aws-cdk-lib/aws-sns';
 
 export class BackendPipelineStack extends cdk.Stack {
   public buildProject: PipelineProject;
   public deployProject: PipelineProject;
-  public pipeline: Pipeline;
-  private slackNotificationTopic: sns.ITopic;
   private props: BasicStackProps;
 
   constructor(scope: Construct, id: string, props: BasicStackProps) {
@@ -93,15 +87,22 @@ export class BackendPipelineStack extends cdk.Stack {
     const artifact1 = new Artifact(`codepipeline_artifact1`);
     const artifact2 = new Artifact(`codepipeline_artifact2`);
 
-    const sourceAction = new CodeStarConnectionsSourceAction({
-      actionName: 'Github_Source',
+    const sourceAction = new GitHubSourceAction({
+      actionName: 'SourceAction',
       owner: process.env.GITHUB_OWNER!,
       repo: process.env.GITHUB_REPO_BACKEND!,
-      output: artifact1,
-      connectionArn: cdk.Fn.importValue(
-        getResourceNameWithPrefix(`connection-arn-${this.props.stage}`)
-      ),
       branch: getGithubBranchName(this.props.stage),
+      oauthToken: cdk.SecretValue.secretsManager(
+        getSecretArn({
+          region: this.props.env?.region!,
+          account: this.props.env?.account!,
+          stage: this.props.stage,
+        }),
+        {
+          jsonField: 'GITHUB_TOKEN',
+        }
+      ),
+      output: artifact1,
     });
 
     const buildAction = new CodeBuildAction({
@@ -117,7 +118,7 @@ export class BackendPipelineStack extends cdk.Stack {
       input: artifact2,
     });
 
-    this.pipeline = new Pipeline(this, 'BackendPipeline', {
+    new Pipeline(this, 'BackendPipeline', {
       pipelineName: getResourceNameWithPrefix(`backend-pipeline-${this.props.stage}`),
       stages: [
         {
@@ -134,10 +135,5 @@ export class BackendPipelineStack extends cdk.Stack {
         },
       ],
     });
-
-    this.pipeline.notifyOnExecutionStateChange(
-      'NotifyPipelineExecution',
-      this.slackNotificationTopic
-    );
   }
 }

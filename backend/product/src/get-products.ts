@@ -18,8 +18,15 @@ const handler: APIGatewayProxyHandler = async (
     });
   }
 
+  const limit = Number(request.getQueryParam('limit', '12'));
+  const { lastEvaluatedKey, category } = request.getQueryParams();
+
   try {
-    const { Items } = await Product.getAll();
+    const { Items, LastEvaluatedKey } = await Product.handleQuery({
+      limit,
+      lastEvaluatedKey,
+      category,
+    });
 
     if (!Items) {
       throw new ValidationException(errors.product.NO_PRODUCTS_IN_DB);
@@ -27,7 +34,8 @@ const handler: APIGatewayProxyHandler = async (
 
     return ApiGwResponse.format(200, {
       message: 'Products retrieved successfully',
-      items: Items.map((it) => unmarshall(it)),
+      items: Items.map((it: Record<string, any>) => unmarshall(it)),
+      lastEvaluatedKey: LastEvaluatedKey,
     });
   } catch (e) {
     console.log({ error: e });

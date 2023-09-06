@@ -3,11 +3,11 @@ version: 0.2
 phases:
   install:
     commands:
-      - npm install -g npm
-      - npm install
+      - npm install -E
       - npm install ./layers/src/common
-  pre-build:
+  pre_build:
     commands:
+      - npm run removeProfiles
       - npm run test
   build:
     commands:

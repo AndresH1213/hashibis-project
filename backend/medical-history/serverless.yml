@@ -81,17 +81,6 @@ functions:
             name: ${self:custom.app.name}-authorizer-${self:custom.stage}
             type: jwt
             id: ${self:custom.env.${self:custom.stage}.authorizerId}
-  get-main:
-    handler: src/get-main.handler
-    name: ${self:custom.app.name}-get-medical-history-${self:custom.stage}
-    package:
-      patterns:
-        - './src/get-main'
-        - ${self:custom.watchFiles.${self:custom.stage}, "!**/*.ts"}
-    events:
-      - httpApi:
-          path: /medical-history
-          method: get
   get-by-id:
     handler: src/get-by-id.handler
     name: ${self:custom.app.name}-get-by-id-medical-history-${self:custom.stage}
@@ -103,6 +92,10 @@ functions:
       - httpApi:
           path: /medical-history/{id}
           method: get
+          authorizer:
+            name: ${self:custom.app.name}-authorizer-${self:custom.stage}
+            type: jwt
+            id: ${self:custom.env.${self:custom.stage}.authorizerId}
 
 plugins:
   - serverless-latest-layer-version

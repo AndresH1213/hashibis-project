@@ -2,15 +2,19 @@ import { IMedicalHistory, MedicalHistoryProps } from '../interfaces';
 import dynamoClient from '/opt/nodejs/services/DynamoClient';
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 
-export default class MedIMedicalHistory {
-  private tableName: string = process.env.MEDICAL_HISTORY_TABLE_NAME;
-
+export default class MedicalHistory {
   public userId: string;
   public body: Partial<IMedicalHistory>;
   constructor(props: MedicalHistoryProps) {
     const { userId, ...body } = props;
     this.userId = userId;
     this.body = body;
+  }
+
+  private static getTableName() {
+    return process.env.IS_OFFLINE
+      ? 'api-hashibis-medical-history-table-dev'
+      : process.env.MEDICAL_HISTORY_TABLE_NAME;
   }
 
   toPublicJson() {
@@ -22,7 +26,7 @@ export default class MedIMedicalHistory {
 
   async getByUser(): Promise<any> {
     const item = await dynamoClient.getByKey({
-      TableName: this.tableName,
+      TableName: MedicalHistory.getTableName(),
       Key: marshall({
         userId: this.userId,
       }),
@@ -32,10 +36,13 @@ export default class MedIMedicalHistory {
 
   async update(): Promise<any> {
     const item = {
-      key: { userId: { S: this.userId } },
+      key: marshall({ userId: this.userId }),
       ...this.body,
     };
-    const { Attributes } = await dynamoClient.patch(item, this.tableName);
+    const { Attributes } = await dynamoClient.patch(
+      item,
+      MedicalHistory.getTableName()
+    );
     return unmarshall(Attributes);
   }
 
@@ -45,8 +52,8 @@ export default class MedIMedicalHistory {
       ...this.body,
     };
     await dynamoClient.save({
-      TableName: this.tableName,
-      Item: marshall(item || {}),
+      TableName: MedicalHistory.getTableName(),
+      Item: marshall(item),
     });
   }
 }

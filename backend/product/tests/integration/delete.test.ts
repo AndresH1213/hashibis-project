@@ -1,5 +1,4 @@
 import { handler as handlerDelete } from '@/src/delete-product';
-import Product from '@/layer/models/Product';
 
 jest.mock('@/layer/models/Product');
 

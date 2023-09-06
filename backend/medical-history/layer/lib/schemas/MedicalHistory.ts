@@ -11,30 +11,44 @@ export default class MedicalHistory {
         chronicIllnesses: {
           type: 'string',
           description:
-            'Record any chronic illnesses the client has, such as diabetes, asthma, heart disease, autoimmune diseases, etc. This is important because certain cannabis products may interact with medications used to treat these illnesses, and dosage adjustments may be necessary',
+            'Record any chronic illnesses the client has, such as diabetes, asthma, heart disease, autoimmune diseases',
         },
         prescriptionMedication: {
           type: 'string',
           description:
-            'Record any prescription medication the client is taking, as some medications may interact with components of marijuana, which can affect their efficacy or cause unwanted side effects',
+            'Record any prescription medication the client is taking',
         },
-        drugsUseHistory: {
+        //
+        previousExperienceWithTHC: {
           type: 'string',
           description:
-            'Record any drug use history, as this may indicate a higher tolerance to the effects of marijuana, which can affect the necessary dosage to achieve desired effects',
+            'Record previous experience with cannabis if any, which can affect the necessary dosage to achieve desired effects',
         },
+        frequenceOfUsage: {
+          type: 'string',
+          enum: ['ocassional', 'regular', 'daily'],
+          description: 'Frequency of cannabis usage',
+        },
+        effectsExperienced: {
+          type: 'string',
+          description: 'any positive or negative effects experienced',
+        },
+        //
         psychiatricIssues: {
           type: 'string',
           description:
             "Record any psychiatric issues the client may have, such as anxiety, depression, sleep disorders, etc. This is important because certain cannabis products can affect a person's mood and sleep, and dosage adjustments may be necessary.",
         },
-        isPregnancyOrLactation: {
-          type: 'boolean',
-          description:
-            'Record whether the client is pregnant or breastfeeding, as marijuana can affect fetal development and lactation',
+        historyOfAbuse: {
+          type: 'string',
+          description: 'History of substance abuse or addiction',
+        },
+        mentalHealthMedications: {
+          type: 'string',
+          description: 'Mental Health medication (if any)',
         },
       },
-      required: ['allergies', 'chronicIllnesses'],
+      required: [],
     } as const;
   }
 }

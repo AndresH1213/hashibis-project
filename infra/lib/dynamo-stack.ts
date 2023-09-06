@@ -21,8 +21,8 @@ export class DynamoStack extends Stack {
     this.orderTable = this.createTable('Order', 'userId', 'id');
 
     this.addGlobalSecondaryIndexes();
-
     this.exportTableNames();
+    this.exportTableArns();
   }
 
   createTable(name: string, pk: string, sk?: string) {
@@ -44,10 +44,9 @@ export class DynamoStack extends Stack {
     this.addGlobalSecondaryIndex(this.medicalHistoryTable, 'drugsUseHistory');
     this.addGlobalSecondaryIndex(this.orderTable, 'status', 'date');
     this.addGlobalSecondaryIndex(this.orderTable, 'paymentMethod', 'userId');
-    this.addGlobalSecondaryIndex(this.productTable, 'name');
-    this.addGlobalSecondaryIndex(this.productTable, 'type');
-    this.addGlobalSecondaryIndex(this.productTable, 'effects');
-    this.addGlobalSecondaryIndex(this.productTable, 'presentation');
+    this.addGlobalSecondaryIndex(this.productTable, 'code');
+    this.addGlobalSecondaryIndex(this.productTable, 'category');
+    // this.addGlobalSecondaryIndex(this.productTable, 'price');
   }
 
   addGlobalSecondaryIndex(table: Table, pk: string, sk?: string) {
@@ -78,6 +77,25 @@ export class DynamoStack extends Stack {
     new CfnOutput(this, 'OrderTableName', {
       value: this.orderTable.tableName,
       exportName: getResourceNameWithPrefix(`order-table-name-${this.stage}`),
+    });
+  }
+
+  exportTableArns() {
+    new CfnOutput(this, 'PersonalInformationTableArn', {
+      value: this.personalInformationTable.tableArn,
+      exportName: getResourceNameWithPrefix(`personal-information-table-arn-${this.stage}`),
+    });
+    new CfnOutput(this, 'MedicalHistoryTableArn', {
+      value: this.medicalHistoryTable.tableArn,
+      exportName: getResourceNameWithPrefix(`medical-history-table-arn-${this.stage}`),
+    });
+    new CfnOutput(this, 'ProductTableArn', {
+      value: this.productTable.tableArn,
+      exportName: getResourceNameWithPrefix(`product-table-arn-${this.stage}`),
+    });
+    new CfnOutput(this, 'OrderTableArn', {
+      value: this.orderTable.tableArn,
+      exportName: getResourceNameWithPrefix(`order-table-arn-${this.stage}`),
     });
   }
 }

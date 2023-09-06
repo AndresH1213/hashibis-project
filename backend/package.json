@@ -4,16 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "./build.sh --run-tests",
-    "install:layers": "npm run install ./layers/src/common",
-    "dev": "./build.sh --offline",
-    "dev:init": "npm run createTables && npm run ci && npm run install:layers ",
     "createTables": "docker-compose up -d --build && ./build.sh --build-tables",
     "compileLayers": "./build.sh --compile-layers",
+    "dev": "./build.sh --offline",
+    "dev:init": "npm run createTables && npm run ci && npm run install:layers ",
     "deploy": "sls deploy --stage $npm_config_env",
+    "deployStack": "sls $npm_config_stack:deploy --stage $npm_config_env",
     "destroy": "sls remove --stage $npm_config_env",
+    "dockerUp": "docker-compose --project-name hashibis-local -d up",
+    "install:layers": "npm run install ./layers/src/common",
+    "listTables": "aws dynamodb list-tables --endpoint-url http://localhost:8000",
+    "resetTables": "./build.sh --remove-tables && ./build.sh --build-tables",
+    "removeProfiles": "./build.sh --remove-profiles",
     "scanTable": "aws dynamodb scan --table-name api-hashibis-$npm_config_table-table-dev --endpoint-url http://localhost:8000",
-    "listTables": "aws dynamodb list-tables --endpoint-url http://localhost:8000"
+    "test": "./build.sh --run-tests"
   },
   "devDependencies": {
     "@aws-sdk/util-dynamodb": "^3.310.0",
@@ -24,7 +28,6 @@
     "esbuild": "^0.14.25",
     "jest": "^29.1.2",
     "json-schema-to-ts": "^2.7.2",
-    "npm": "^8.19.2",
     "serverless-esbuild": "^1.25.0",
     "serverless-latest-layer-version": "^2.1.1",
     "serverless-offline": "^8.5.0",

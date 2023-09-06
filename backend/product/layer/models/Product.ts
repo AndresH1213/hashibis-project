@@ -1,17 +1,21 @@
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
-import { IProduct, ProductProps } from '../interfaces';
+import { IProduct, ProductProps, getAllProps } from '../interfaces';
 import { generateId } from '/opt/nodejs/libs/Id';
 import dynamoClient from '/opt/nodejs/services/DynamoClient';
 
 export default class Product {
-  private tableName: string = process.env.PRODUCT_TABLE_NAME;
-
   public id: string;
   public body: Partial<IProduct>;
   constructor(public props: ProductProps) {
     const { id, ...body } = props;
     this.id = id;
     this.body = body;
+  }
+
+  private static getTableName() {
+    return process.env.IS_OFFLINE
+      ? 'api-hashibis-product-table-dev'
+      : process.env.PRODUCT_TABLE_NAME;
   }
 
   toPublicJson() {
@@ -23,7 +27,7 @@ export default class Product {
 
   async getById(): Promise<any> {
     const item = await dynamoClient.getByKey({
-      TableName: this.tableName,
+      TableName: Product.getTableName(),
       Key: marshall({
         id: this.id,
       }),
@@ -36,27 +40,47 @@ export default class Product {
       key: { id: { S: this.id } },
       ...this.body,
     };
-    const { Attributes } = await dynamoClient.patch(item, this.tableName);
+    const { Attributes } = await dynamoClient.patch(
+      item,
+      Product.getTableName()
+    );
     return unmarshall(Attributes);
   }
 
-  private static getTableName() {
-    return process.env.PRODUCT_TABLE_NAME;
+  static async queryByIndex({ category }: { category: string }): Promise<any> {
+    const params = {
+      tableName: this.getTableName(),
+      index: { name: 'categoryGSI', attribute: 'category', value: category },
+    };
+    const result = await dynamoClient.queryByIndex(params);
+    return result;
   }
 
-  static async getAll(): Promise<any> {
+  static async getAll({ limit, lastEvaluatedKey }: getAllProps): Promise<any> {
     const params = {
       TableName: this.getTableName(),
-      Limit: 10,
+      Limit: limit,
+      ExclusiveStartKey: lastEvaluatedKey,
     };
-    const items = await dynamoClient.scan(params);
+    const result = await dynamoClient.scan(params);
 
-    return items;
+    return result;
+  }
+
+  static async handleQuery({ limit, lastEvaluatedKey, category }) {
+    if (category) {
+      return await this.queryByIndex({ category });
+    }
+    const LEKObj = lastEvaluatedKey && JSON.parse(lastEvaluatedKey);
+    return await this.getAll({
+      limit,
+      lastEvaluatedKey: LEKObj,
+    });
   }
 
   async delete(): Promise<any> {
     const params = {
-      TableName: this.tableName,
+      TableName: Product.getTableName(),
       Key: marshall({
         id: this.id,
       }),
@@ -71,7 +95,7 @@ export default class Product {
       ...this.body,
     };
     await dynamoClient.save({
-      TableName: this.tableName,
+      TableName: Product.getTableName(),
       Item: marshall(item || {}),
     });
   }

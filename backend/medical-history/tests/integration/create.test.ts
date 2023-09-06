@@ -5,7 +5,10 @@ jest.mock('@/layer/models/MedicalHistory');
 const restParams: [any, any] = [{} as any, () => {}];
 const paramBody = { body: JSON.stringify(medical_history_body) };
 const getSuccessParams = (): [any, any, any] => [paramBody, ...restParams];
-const getFailedParams = (): [any, any, any] => [{}, ...restParams];
+const getFailedParams = (): [any, any, any] => [
+  { body: { requenceOfUsage: 'random' } },
+  ...restParams,
+];
 
 describe('Suite for test the lambda for create medical history', function () {
   it('test the object for success response', async () => {
@@ -29,6 +32,7 @@ describe('Suite for test the lambda for create medical history', function () {
 
   it('test errors array in the response', async () => {
     const res = await handlerCreate(...getFailedParams());
+    console.log('res', res);
     if (!res) throw new Error('No response');
     const body = JSON.parse(res.body);
     expect(body.errors).toBeInstanceOf(Array);

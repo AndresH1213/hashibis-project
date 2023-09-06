@@ -27,6 +27,9 @@ provider:
     REGION: ${self:custom.region}
     PERSONAL_INFORMATION_TABLE_NAME:
       Fn::ImportValue: ${self:custom.app.name}-personal-information-table-name-${self:custom.stage}
+    BUCKET_NAME:
+      Fn::ImportValue: ${self:custom.app.name}-bucket-name-${self:custom.stage}
+
 package:
   individually: true
   patterns:
@@ -77,6 +80,21 @@ functions:
       - httpApi:
           path: /personal-information
           method: patch
+          authorizer:
+            name: ${self:custom.app.name}-authorizer-${self:custom.stage}
+            type: jwt
+            id: ${self:custom.env.${self:custom.stage}.authorizerId}
+  uploadProfileImage:
+    handler: src/upload-profile-image.handler
+    name: ${self:custom.app.name}-upload-profile-image-${self:custom.stage}
+    package:
+      patterns:
+        - './src/upload-profile-image'
+        - ${self:custom.watchFiles.${self:custom.stage}, "!**/*.ts"}
+    events:
+      - httpApi:
+          path: /personal-information/upload-image
+          method: get
           authorizer:
             name: ${self:custom.app.name}-authorizer-${self:custom.stage}
             type: jwt

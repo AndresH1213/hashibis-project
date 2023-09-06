@@ -19,10 +19,3 @@ export class GetByIdMedicalHistoryRequest extends ApiGatewayRequest {
     };
   }
 }
-
-export class GetMedicalHistoryRequest extends ApiGatewayRequest {
-  readonly validationRules: any;
-  constructor(event: APIGatewayProxyEvent) {
-    super(event);
-  }
-}

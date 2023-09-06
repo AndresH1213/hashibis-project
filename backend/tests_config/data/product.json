@@ -1,18 +1,17 @@
 {
-  "name": "CBD Oil",
-  "type": "extract",
-  "cannabinoidContent": "CBD 25%, CBG 2%",
-  "concentration": "20mg/portion",
-  "measureUnitConcentration": "portion",
-  "extractionMethod": "ethanol",
-  "origin": "hybrid",
-  "presentation": "bottle",
-  "price": 70,
-  "effects": "Calming, pain relief, anti-inflammatory",
-  "family": "CBD",
-  "recommendedPersonalDose": "1 portion before bedtime",
-  "scientificResearch": [
-    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6140266/",
-    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7023045/"
-  ]
+  "name": "Golden CO2 Oil",
+  "code": "GCO",
+  "description": "Potency meets purity. Our CO2 Oil brings you the real deal. A small hit, and you're in for a flavor-packed adventure.",
+  "category": "Concentrates",
+  "concentration": 70,
+  "measureUnitConcentration": "percent THC",
+  "tags": ["oil", "CO2 extraction", "concentrate"],
+  "price": 60,
+  "images": [],
+  "benefits": ["intense euphoria", "relaxation", "pain relief"],
+  "views": 0,
+  "likes": 0,
+  "personalDosis": "1 dab",
+  "recommendation": "evening use",
+  "scientificResearch": []
 }

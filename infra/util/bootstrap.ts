@@ -12,7 +12,7 @@ export function validateEnvironmentVariables() {
   }
 }
 
-export function validateEnvironment(stage: string) {
+export function getEnvironment(stage: string) {
   if (!['dev', 'prod'].includes(stage)) {
     throw new Error('Please specify a valid environment');
   }

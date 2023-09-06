@@ -1,5 +1,5 @@
 import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
-import { CreatePersonalInformationRequest } from '@/layer/lib/requests/CreatePersonalInformationRequest';
+import { CreatePersonalInformationRequest } from '@/layer/lib/requests/PutPersonalInformationRequest';
 import ApiGwResponse from '/opt/nodejs/libs/ApiGwResponse';
 import PersonalInformation from '@/layer/models/PersonalInformation';
 

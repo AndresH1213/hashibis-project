@@ -17,4 +17,20 @@ export default class JsonValidator {
       errors: JsonValidator.formatErrors(validationResult.errors),
     };
   }
+
+  static validateBodyParams(
+    params: Record<string, any>,
+    allowedParams: Record<string, any>
+  ) {
+    if (allowedParams?.type !== 'object') {
+      return {};
+    }
+    const result: Record<string, any> = {};
+    Object.keys(params).forEach((key) => {
+      if (allowedParams.properties.hasOwnProperty(key)) {
+        result[key] = params[key];
+      }
+    });
+    return result;
+  }
 }

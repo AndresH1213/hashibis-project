@@ -22,7 +22,7 @@ export default class ApiGwResponse {
     let httpStatusCode = 500;
     let code = 'HS500';
     let message = 'oops!, something went wrong';
-    const validCodes = [400, 404, 503];
+    const validCodes = [400, 403, 404, 503];
 
     if (validCodes.includes(e.httpStatus)) {
       httpStatusCode = e.httpStatus;

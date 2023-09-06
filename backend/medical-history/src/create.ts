@@ -1,5 +1,5 @@
 import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
-import { CreateMedicalHistoryRequest } from '../layer/lib/requests/CreateMedicalHistoryRequest';
+import { CreateMedicalHistoryRequest } from '../layer/lib/requests/PutMedicalHistoryRequest';
 import ApiGwResponse from '/opt/nodejs/libs/ApiGwResponse';
 import MedicalHistory from '../layer/models/MedicalHistory';
 
@@ -18,7 +18,7 @@ const handler: APIGatewayProxyHandler = async (
   const medicalHistory = new MedicalHistory({ userId: user.id, ...body });
 
   try {
-    const newItem = await medicalHistory.save();
+    await medicalHistory.save();
     return ApiGwResponse.format(201, {
       message: 'Medical History created successfully',
       item: medicalHistory.toPublicJson(),

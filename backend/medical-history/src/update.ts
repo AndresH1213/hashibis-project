@@ -1,5 +1,5 @@
 import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
-import { UpdateMedicalHistoryRequest } from '../layer/lib/requests/CreateMedicalHistoryRequest';
+import { UpdateMedicalHistoryRequest } from '../layer/lib/requests/PutMedicalHistoryRequest';
 import ApiGwResponse from '/opt/nodejs/libs/ApiGwResponse';
 import MedicalHistory from '../layer/models/MedicalHistory';
 import errors from '/opt/nodejs/exceptions/errors.json';

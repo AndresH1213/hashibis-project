@@ -2,7 +2,7 @@ import { GetPersonalInformationRequest } from '@/layer/lib/requests/GetPersonalI
 import {
   CreatePersonalInformationRequest,
   UpdatePersonalInformationRequest,
-} from '@/layer/lib/requests/CreatePersonalInformationRequest';
+} from '@/layer/lib/requests/PutPersonalInformationRequest';
 import PersonalInformationSch from '@/layer/lib/schemas/PersonalInformation';
 
 describe('that request classes inherit from ApiGatewayRequest', () => {

@@ -1,6 +1,7 @@
 import JsonValidator from './JsonValidator';
 import { APIGatewayProxyEvent } from 'aws-lambda';
 import { IValidationRules, IValidatorResponse } from '../interfaces';
+import SecretManagerClient from '../services/SecretManagerClient';
 
 export default abstract class ApiGwRequest {
   abstract validationRules: IValidationRules;
@@ -72,7 +73,13 @@ export default abstract class ApiGwRequest {
   }
 
   getBody() {
-    return JSON.parse(this.event.body || '{}');
+    const bodyParamsSended = JSON.parse(this.event.body || '{}');
+    const allowedParams = this.validationRules.bodyParams;
+    const body = JsonValidator.validateBodyParams(
+      bodyParamsSended,
+      allowedParams
+    );
+    return body;
   }
 
   getPathParam(keyParam: string, defaultValue?: string) {
@@ -98,9 +105,23 @@ export default abstract class ApiGwRequest {
   }
 
   getUser() {
-    return {
-      id: '123456789',
-    };
+    const isTest = process.env.TS_JEST;
+    const isOffline = process.env.IS_OFFLINE;
+    if (isOffline || isTest) return { id: '123456789' };
+    if (!this.event.requestContext.authorizer?.jwt) {
+      throw new Error('No authorizer route');
+    }
+    const id = this.event.requestContext.authorizer.jwt.claims.sub;
+    return { id };
+  }
+
+  async isAdminUser() {
+    const isTest = process.env.TS_JEST;
+    const isOffline = process.env.IS_OFFLINE;
+    if (isOffline || isTest) return true;
+    const secretClient = new SecretManagerClient();
+    const adminId = await secretClient.getSecretValue('ADMIN_USER_ID');
+    return this.getUser().id === adminId;
   }
 
   isPrivateRequest() {

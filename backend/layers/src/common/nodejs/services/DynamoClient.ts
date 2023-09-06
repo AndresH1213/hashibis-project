@@ -14,6 +14,8 @@ import {
   DeleteItemCommandInput,
 } from '@aws-sdk/client-dynamodb';
 
+import { marshall } from '@aws-sdk/util-dynamodb';
+
 import {
   DynamoClientParams,
   IQueryByIndexComposeInput,
@@ -109,11 +111,12 @@ class SingletonDynamoClient {
     let updateExpression = '';
 
     // Add each property to the update expression and attribute values
-    Object.entries(updatedProperties).forEach(([key, value], index) => {
-      const attributeValueKey = `:value${index}`;
+    Object.entries(updatedProperties).forEach(([key, value]) => {
+      const attributeValueKey = `:x${key}`;
       const updateString = ` ${key} = ${attributeValueKey},`;
       updateExpression += updateString;
-      params.ExpressionAttributeValues![attributeValueKey] = { S: value };
+      const valueObj = marshall({ [attributeValueKey]: value });
+      params.ExpressionAttributeValues = valueObj;
     });
 
     // Remove trailing comma from update expression

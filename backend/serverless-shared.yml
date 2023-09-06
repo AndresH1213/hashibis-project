@@ -34,6 +34,10 @@ custom:
         - ${self:custom.esBuildWatcher.${self:custom.stage}, self:custom.esBuildWatcher.toAws}
   serverless-offline:
     noAuth: true
+  s3:
+    host: localhost
+    directory: ./../localBucket
+    port: 4569
   env:
     dev:
       accountRegion: us-east-1
@@ -47,11 +51,6 @@ custom:
       domainPrefix: api.
       authorizerId:
         Fn::ImportValue: ${self:custom.app.name}-authorizer-id-${self:custom.stage}
-# PUGLINGS TO CONSIDERED
-#  s3:   # https://www.serverless.com/plugins/serverless-s3-local
-#    host: localhost
-#    directory: ./../localBucket
-#    port: 4569
 #  serverless-offline-sns: # https://www.serverless.com/plugins/serverless-offline-sns
 #    port: 4002
 #    debug: true

@@ -32,20 +32,20 @@ export default class PersonalInformation {
           description: 'Type of identification of the person',
           enum: ['CC', 'PA', 'NIT'],
         },
+        gender: {
+          type: 'string',
+          description: 'Gender of the person',
+          enum: ['male', 'female', 'other'],
+        },
         phone: {
           type: 'string',
-          pattern: '^[0-9]{10}$',
+          pattern: '^\\+\\d{5,16}$',
           description: 'Phone of the person',
         },
         hasMedicalHistory: {
           type: 'boolean',
           default: false,
           description: 'Indicates if the person has a medical history',
-        },
-        cannabisExperience: {
-          type: 'number',
-          description: 'Indicates the experience of the person with cannabis',
-          enum: [1, 2, 3, 4],
         },
         lastOrder: {
           type: 'string',
@@ -58,14 +58,7 @@ export default class PersonalInformation {
           default: 0,
         },
       },
-      required: [
-        'name',
-        'lastname',
-        'birthday',
-        'identification',
-        'identificationType',
-        'cannabisExperience',
-      ],
+      required: ['name', 'lastname', 'birthday'],
     } as const;
   }
 }

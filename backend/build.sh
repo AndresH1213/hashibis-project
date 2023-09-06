@@ -51,6 +51,16 @@ remove-tables() {
     done;
 }
 
+remove-profiles() {
+    STACKS+=("layers")
+    for stack in ${STACKS[@]}; do
+        cd $stack
+        echo -e "${YELLOW}Removing aws profiles from yml of $stack...${ENDCOLOR}"
+        sed -i 's/profile: ${self:custom.profile}//g' serverless.yml
+        cd ..
+    done;
+}
+
 run-tests() {
     for stack in ${STACKS[@]}; do
         cd $stack
@@ -73,6 +83,8 @@ do
             remove-tables ;;
         --run-tests)
             run-tests ;;
+        --remove-profiles)
+            remove-profiles;;
         *)
             echo "Invalid option: $arg"
             exit 1

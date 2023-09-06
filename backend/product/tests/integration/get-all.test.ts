@@ -7,7 +7,7 @@ const params: [any, any, any] = [{} as any, {} as any, () => {}];
 
 describe('Suite for test the lambda for get all products', function () {
   it('test the object for success response', async () => {
-    const spy = jest.spyOn(Product, 'getAll');
+    const spy = jest.spyOn(Product, 'handleQuery');
     const res = await handlerGetAll(...params);
     expect(spy).toHaveBeenCalled();
     if (!res) throw new Error('No response');
@@ -26,7 +26,9 @@ describe('Suite for test the lambda for get all products', function () {
   });
 
   it('test first object in error array in the response response', async () => {
-    const spy = jest.spyOn(Product, 'getAll').mockReturnValueOnce({} as any);
+    const spy = jest
+      .spyOn(Product, 'handleQuery')
+      .mockReturnValueOnce({} as any);
     const res = await handlerGetAll(...params);
 
     expect(spy).toHaveBeenCalled();

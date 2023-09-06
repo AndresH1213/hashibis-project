@@ -4,6 +4,11 @@
       "code": "HSI-0001",
       "message": "User already exists",
       "httpStatus": 400
+    },
+    "USER_IS_NOT_ADMIN": {
+      "code": "HSI-0002",
+      "message": "User can't perform this request",
+      "httpStatus": 403
     }
   },
   "medicalHistory": {
@@ -49,6 +54,11 @@
     "PRODUCT_NO_DATA_TO_UPDATED": {
       "code": "HSI-3003",
       "message": "There is no data for update the product",
+      "httpStatus": 400
+    },
+    "NO_IMAGE_DATA": {
+      "code": "HSI-3004",
+      "message": "There is missing product's image data in request",
       "httpStatus": 400
     }
   },

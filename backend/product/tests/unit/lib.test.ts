@@ -5,7 +5,7 @@ import {
 import {
   CreateProductRequest,
   UpdateProductRequest,
-} from '@/layer/lib/requests/CreateProductRequest';
+} from '@/layer/lib/requests/PutProductRequest';
 import { DeleteProductRequest } from '@/layer/lib/requests/DeleteProductRequest';
 import ProductSch from '@/layer/lib/schemas/ProductSchema';
 

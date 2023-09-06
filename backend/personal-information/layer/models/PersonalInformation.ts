@@ -3,8 +3,6 @@ import dynamoClient from '/opt/nodejs/services/DynamoClient';
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 
 export default class PersonalInformation {
-  private tableName: string = process.env.PERSONAL_INFORMATION_TABLE_NAME;
-
   public userId: string;
   public body: Partial<IPersonalInformation>;
 
@@ -12,6 +10,12 @@ export default class PersonalInformation {
     const { userId, ...body } = props;
     this.userId = userId;
     this.body = body;
+  }
+
+  private static getTableName() {
+    return process.env.IS_OFFLINE
+      ? 'api-hashibis-personal-information-table-dev'
+      : process.env.PERSONAL_INFORMATION_TABLE_NAME;
   }
 
   toPublicJson() {
@@ -23,7 +27,7 @@ export default class PersonalInformation {
 
   async getByUser(): Promise<any> {
     const item = await dynamoClient.getByKey({
-      TableName: this.tableName,
+      TableName: PersonalInformation.getTableName(),
       Key: marshall({
         userId: this.userId,
       }),
@@ -36,7 +40,10 @@ export default class PersonalInformation {
       key: { userId: { S: this.userId } },
       ...this.body,
     };
-    const { Attributes } = await dynamoClient.patch(item, this.tableName);
+    const { Attributes } = await dynamoClient.patch(
+      item,
+      PersonalInformation.getTableName()
+    );
     return unmarshall(Attributes);
   }
 
@@ -46,7 +53,7 @@ export default class PersonalInformation {
       ...this.body,
     };
     await dynamoClient.save({
-      TableName: this.tableName,
+      TableName: PersonalInformation.getTableName(),
       Item: marshall(item || {}),
     });
   }

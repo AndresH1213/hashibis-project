@@ -15,8 +15,18 @@ describe('Suite for test the lambda for product', function () {
     expect(body.item).toEqual(
       expect.objectContaining({
         name: expect.any(String),
-        type: expect.any(String),
-        cannabinoidContent: expect.any(String),
+        code: expect.any(String),
+        description: expect.any(String),
+        category: expect.any(String),
+        concentration: expect.any(Number),
+        measureUnitConcentration: expect.any(String),
+        tags: expect.any(Array),
+        price: expect.any(Number),
+        images: expect.any(Array),
+        benefits: expect.any(Array),
+        personalDosis: expect.any(String),
+        recommendation: expect.any(String),
+        scientificResearch: expect.any(Array),
       })
     );
   });

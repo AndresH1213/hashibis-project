@@ -1,5 +1,5 @@
 import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
-import { UpdateProductRequest } from '../layer/lib/requests/CreateProductRequest';
+import { UpdateProductRequest } from '../layer/lib/requests/PutProductRequest';
 import ApiGwResponse from '/opt/nodejs/libs/ApiGwResponse';
 import Product from '../layer/models/Product';
 import ValidationException from '/opt/nodejs/exceptions/ValidationException';
@@ -9,6 +9,12 @@ const handler: APIGatewayProxyHandler = async (
   event
 ): Promise<APIGatewayProxyResult> => {
   const request = new UpdateProductRequest(event);
+  const isAdmin = await request.isAdminUser();
+
+  if (!isAdmin) {
+    throw new ValidationException(errors.users.USER_IS_NOT_ADMIN);
+  }
+
   const requestValidated = request.validate();
   if (!requestValidated.valid) {
     return ApiGwResponse.format(400, {
@@ -17,7 +23,6 @@ const handler: APIGatewayProxyHandler = async (
   }
   const body = request.getBody();
   const productId = request.getPathParam('id');
-  const user = request.getUser(); // check is admin
 
   if (Object.keys(body).length === 0) {
     throw new ValidationException(errors.product.PRODUCT_NO_DATA_TO_UPDATED);

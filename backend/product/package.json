@@ -10,5 +10,7 @@
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {}
+  "devDependencies": {
+    "serverless-s3-local": "^0.7.2"
+  }
 }

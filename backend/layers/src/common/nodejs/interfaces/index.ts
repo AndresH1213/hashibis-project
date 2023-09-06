@@ -38,11 +38,24 @@ interface IQueryByIndexInput {
   index: Index;
 }
 
-interface DynamoClientParams {
+interface SDKClientParams {
   region: string;
   endpoint?: string;
   accessKeyId?: string;
   secretAccessKey?: string;
+}
+
+interface DynamoClientParams extends SDKClientParams {}
+
+interface S3ClientParams extends SDKClientParams {
+  forcedPathStyle?: boolean;
+}
+
+interface GetPresignedUrlParams {
+  bucket: string;
+  key: string;
+  acl: string;
+  contentType: string;
 }
 
 export {
@@ -52,4 +65,6 @@ export {
   IQueryByIndexInput,
   IQueryByIndexComposeInput,
   DynamoClientParams,
+  S3ClientParams,
+  GetPresignedUrlParams,
 };
